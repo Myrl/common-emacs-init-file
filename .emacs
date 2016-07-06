@@ -1,5 +1,4 @@
 
-(message "start of common")
 
 (global-set-key (kbd "C-c i") 'my-jump-to-init-file)
 (defun my-jump-to-init-file ()
@@ -162,5 +161,3 @@
 (setq calendar-latitude 47.6)
 (setq calendar-longitude -122.3)
 (setq calendar-location-name "Seattle, WA")
-
-(message "end of common")
