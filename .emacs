@@ -1,5 +1,4 @@
 
-
 (global-set-key (kbd "C-c i") 'my-jump-to-init-file)
 (defun my-jump-to-init-file ()
   (interactive)
@@ -19,6 +18,7 @@
 (setq vc-follow-symlinks t)
 (winner-mode)
 (windmove-default-keybindings)
+(global-auto-revert-mode)
 
 (setq package-archives
       '(("gnu" . "http://elpa.gnu.org/packages/")
@@ -137,6 +137,8 @@
 (setq org-blank-before-new-entry
       '((heading . nil)
 	(plain-list-item . nil)))
+(setq org-return-follows-link t)
+
 
 (org-babel-do-load-languages 'org-babel-load-languages
 			     '(;; (bash . t)
