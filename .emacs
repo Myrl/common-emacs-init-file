@@ -1,6 +1,4 @@
 
-(message "start of common")
-
 (global-set-key (kbd "C-c i") 'my-jump-to-init-file)
 (defun my-jump-to-init-file ()
   (interactive)
@@ -38,7 +36,14 @@
 (require 'use-package)
 
 (setq-default truncate-lines t)
-;; (global-set-key (kbd "M-/") 'hippie-expand)
+(setq ielm-prompt "ielm> ")
+(setq find-function-C-source-directory
+      "~/my-tech-downloads/emacs-24.5/src")
+(add-to-list 'auto-mode-alist '(".mdwn" . markdown-mode))
+
+;; (use-package xscheme)
+;; (setq scheme-root 
+(setq scheme-program-name "/usr/local/bin/scheme")
 
 (setq python-indent-offset 4)
 (setq python-shell-interpreter "python3"
@@ -77,7 +82,13 @@
   :config
   (add-hook 'haskell-mode-hook 'interactive-haskell-mode)
   (add-hook 'haskell-mode-hook 'haskell-indentation-mode)
-  (setq haskell-interactive-popup-errors nil))
+  (setq haskell-interactive-popup-errors nil)
+  (bind-key "C-c C-l" 'my-save-and-haskell-load haskell-mode-map)
+  (defun my-save-and-haskell-load ()             
+    (interactive)
+    (with-current-buffer (current-buffer)
+      (save-buffer)
+      (haskell-process-load-file))))
 
 (use-package exec-path-from-shell
   :ensure t
@@ -117,50 +128,112 @@
   (setq-default evil-escape-key-sequence "jk")
   (evil-escape-mode))
 
+(use-package todotxt
+  :ensure t
+  :config
+  (setq todotxt-file todotxt-file) ; don't forget :)
+  (setq todotxt-use-creation-dates nil)
+  :bind ("C-x t" . todotxt))
+
 (bind-keys ("M-<down>"  . enlarge-window)
            ("M-<up>"    . shrink-window)
-           ("M-<left>" . (lambda ()
-                            (interactive)
-                            (shrink-window-horizontally 4)))
-           ("M-<right>"  . (lambda ()
-                            (interactive)
-                            (enlarge-window-horizontally 4))))
+           ("M-<left>" . shrink-window-horizontally-4)
+           ("M-<right>"  . enlarge-window-horizontally-4))
 
-;; (global-set-key (kbd "M-<down>") 'enlarge-window)
-;; (global-set-key (kbd "M-<up>") 'shrink-window)
-;; (global-set-key (kbd "M-<right>") 'enlarge-window-horizontally)
-;; (global-set-key (kbd "M-<left>") 'shrink-window-horizontally)
+(defun shrink-window-horizontally-4 ()
+  (interactive)
+  (shrink-window-horizontally 4))
+(defun enlarge-window-horizontally-4 ()
+  (interactive)
+  (enlarge-window-horizontally 4))
 
 (bind-keys ("C-S-e" . scroll-up-line)
            ("C-S-y" . scroll-down-line))
+
+(autoload 'calendar-date-string "calendar")
+(defun insert-date-N-days-from-current (&optional days)
+  "Insert date that is DAYS from current."
+  (interactive "P*")
+  (insert
+   (calendar-date-string
+    (if days
+        (calendar-gregorian-from-absolute
+         (+ (calendar-absolute-from-gregorian (calendar-current-date))
+            days))
+      (calendar-current-date)))))
+(global-set-key (kbd "C-c d") 'insert-date-N-days-from-current)
 
 (setq org-cycle-separator-lines 0)
 (setq org-blank-before-new-entry
       '((heading . nil)
 	(plain-list-item . nil)))
 
-(org-babel-do-load-languages 'org-babel-load-languages
-			     '(;; (bash . t)
-			       (C . t)
-			       ;; (css . t)
-			       ;; (dot . t)
-			       ;; (sage . t)
-			       (emacs-lisp . t)
-			       (haskell . t)
-			       ;; (java . t)
-			       (js . t)
-			       (latex . t)
-			       (ledger . t)
-			       (makefile . t)
-			       (org . t)
-			       (python . t)
-			       (scheme . t)
-			       (sh . t)
-			       ;; (xscheme . t)
-			       ))
-
 (setq calendar-latitude 47.6)
 (setq calendar-longitude -122.3)
 (setq calendar-location-name "Seattle, WA")
 
-(message "end of common")
+(setq org-entities-user '(("vdots" "\\vdots" nil "&#8230" "|" "⋮" "⋮")))
+
+(global-set-key (kbd "C-c a") 'org-agenda)
+(global-set-key (kbd "C-c c") 'org-capture)
+(global-set-key (kbd "C-c l") 'org-store-link)
+(global-set-key (kbd "C-c C-l") 'org-insert-link)
+
+(add-hook 'org-mode-hook 'auto-fill-mode)
+
+(setq org-agenda-timegrid-use-ampm t)
+(setq org-cycle-separator-lines 0)
+(setq org-blank-before-new-entry '((heading) (plain-list-item)))
+(setq org-src-fontify-natively t)
+(setq org-edit-src-content-indentation 0)
+
+(setq org-return-follows-link t)
+(setq org-use-speed-commands t)
+(setq org-speed-commands-user '((";" . org-set-tags-command)))
+(setq org-fast-tag-selection-single-key t)
+(setq org-special-ctrl-a/e t)
+(setq org-special-ctrl-k t)
+
+;; (add-hook 'org-shiftup-final-hook 'windmove-up)
+;; (add-hook 'org-shiftleft-final-hook 'windmove-left)
+;; (add-hook 'org-shiftdown-final-hook 'windmove-down)
+;; (add-hook 'org-shiftright-final-hook 'windmove-right)
+;; (setq org-support-shift-select t)
+;; (setq org-tags-column -70)
+
+(setq org-src-tab-acts-natively t)
+(setq org-src-fontify-natively t)
+(setq org-export-allow-bind-keywords t)
+(setq org-export-backends '(ascii html latex odt))
+(require 'ob-haskell)
+(setq org-highlight-latex-and-related '(latex entities))
+;; (add-hook 'org '(require 'ox))
+(eval-after-load "org-src"
+  '(progn
+     (add-to-list 'org-src-lang-modes '("dot" . graphviz-dot))
+     (add-to-list 'org-src-lang-modes '("sage" . sage))
+     (add-to-list 'org-src-lang-modes '("xml" . xml))
+     ;; (add-to-list 'org-src-lang-modes '("xscheme" . xscheme))
+     ;; (add-to-list 'org-src-lang-modes '("bash" . bash))
+     (org-babel-do-load-languages
+      'org-babel-load-languages
+      '(;; (bash . t)
+        (C . t)
+        ;; (css . t)
+        ;; (dot . t)
+        ;; (sage . t)
+        (emacs-lisp . t)
+        (haskell . t)
+        ;; (java . t)
+        (js . t)
+        (latex . t)
+        (ledger . t)
+        (makefile . t)
+        (org . t)
+        (python . t)
+        (scheme . t)
+        (sh . t)
+        ;; (xscheme . t)
+        ))))
+
+(setq custom-file "~/.custom.el")
