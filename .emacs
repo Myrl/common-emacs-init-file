@@ -19,6 +19,7 @@
 (setq vc-follow-symlinks t)
 (winner-mode)
 (windmove-default-keybindings)
+(global-auto-revert-mode)
 
 (setq mouse-wheel-scroll-amount '(1 ((shift) . 5) ((control))))
 (setq mouse-wheel-progressive-speed nil)
@@ -487,6 +488,8 @@
 (setq org-blank-before-new-entry
       '((heading . nil)
 	(plain-list-item . nil)))
+(setq org-return-follows-link t)
+
 
 (setq calendar-latitude 47.6)
 (setq calendar-longitude -122.3)
