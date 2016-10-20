@@ -19,6 +19,7 @@
 (winner-mode)
 (windmove-default-keybindings)
 (global-auto-revert-mode)
+(setq nlinum-format "%4d \u2502 ")
 
 (setq package-archives
       '(("gnu" . "http://elpa.gnu.org/packages/")
@@ -43,10 +44,10 @@
 (setq python-shell-interpreter "python3"
       python-shell-interpreter-args "-i")
 
-(unless (eq system-type 'darwin)
-  (use-package badger-theme
-    :ensure t
-    :config (load-theme 'badger t)))
+;; (unless (eq system-type 'darwin)
+;;   (use-package badger-theme
+;;     :ensure t
+;;     :config (load-theme 'badger t)))
 
 (use-package magit
   :ensure t
@@ -138,7 +139,7 @@
       '((heading . nil)
 	(plain-list-item . nil)))
 (setq org-return-follows-link t)
-
+(setq org-use-speed-commands t)
 
 (org-babel-do-load-languages 'org-babel-load-languages
 			     '(;; (bash . t)
@@ -163,3 +164,17 @@
 (setq calendar-latitude 47.6)
 (setq calendar-longitude -122.3)
 (setq calendar-location-name "Seattle, WA")
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages
+   (quote
+    (alert weechat w3m evil-escape evil yasnippet nlinum exec-path-from-shell haskell-mode bookmark+ magit badger-theme helm use-package))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
